@@ -39,26 +39,25 @@ jobs:
       run: |
         conda create -n autogluon-conda python=3.10 -y
 
-    - name: Activate environment
-      run: |
-        source $CONDA/bin/activate autogluon-conda
-
     - name: Check Python version
       run: |
         source $CONDA/bin/activate autogluon-conda && python3 --version
 
     - name: Install mamba if missing
       run: |
-        source $CONDA/bin/activate autogluon-conda && conda list mamba || conda install -c conda-forge mamba -y
+        source $CONDA/bin/activate autogluon-conda
+          if ! conda list | grep -q "^mamba"; then
+            conda install -c conda-forge mamba -y
+          fi
 
     - name: Install dependencies with mamba
       run: |
         source $CONDA/bin/activate autogluon-conda && mamba install -c conda-forge --file requirements-gluon-conda.txt -y
-    - name: Run test
-      run: |
-        source $CONDA/bin/activate autogluon-conda && python test_linear_ensemble.py
 
     - name: Install pip dependencies
       run: |
         source $CONDA/bin/activate autogluon-conda && pip install -r requirements-gluon-pip.txt
-        pytest
+
+    - name: Run test
+      run: |
+        source $CONDA/bin/activate autogluon-conda && python test_linear_ensemble.py
