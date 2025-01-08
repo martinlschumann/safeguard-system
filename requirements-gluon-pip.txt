@@ -1,0 +1,3 @@
+pymfe==0.4.3 # for meta features
+shap==0.45.1 # for explaining "the output of any machine learning model"
+adjustText==1.1.1 # for making labels for matplotlib more readable

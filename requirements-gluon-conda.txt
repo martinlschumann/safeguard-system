@@ -1,0 +1,7 @@
+# versions the same as anaconda's "spack/release/23.1.0 haswell"
+wheel==0.41.2
+autogluon==0.8.2
+scikit-learn==1.3.2
+openml==0.12.2
+beautifulsoup4==4.12.2
+tqdm==4.66.1 # for progress bars
