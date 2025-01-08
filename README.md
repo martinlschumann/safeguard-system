@@ -28,7 +28,7 @@ Files with `_parallel` are the same as the normal, but use `ProcessPoolExecutor`
 `./autogluon_standalone_calc_pymfe.py -f csv_files/fullpymfe-model-based-cc18+100.csv`
 
 Usage:
-`autogluon_standalone_pymfe_full_study.py -f <saved model from autogluon>` or e.g., `slurm_full_study_pymfe_custom_datasets-diff-cluster-cd3.sh` for a slurm version
+`autogluon_standalone_pymfe_full_study.py -f <saved model from autogluon>`.
 
 # Running meta feature analysis (v2, using pymfe and sklearn as the predictor)
 
