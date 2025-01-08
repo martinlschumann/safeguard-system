@@ -1,0 +1,58 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-activate-base: false
+
+    - name: Check if environment exists
+      id: check_env
+      run: |
+        conda env list | grep -q "autogluon-conda" || echo "missing"
+
+    - name: Create environment if missing
+      if: steps.check_env.outputs.stdout == 'missing'
+      run: |
+        conda create -n autogluon-conda python=3.10 -y
+
+    - name: Activate environment
+      run: |
+        source $CONDA/bin/activate autogluon-conda
+
+    - name: Check Python version
+      run: |
+        source $CONDA/bin/activate autogluon-conda && python3 --version
+
+    - name: Install mamba if missing
+      run: |
+        source $CONDA/bin/activate autogluon-conda && conda list mamba || conda install -c conda-forge mamba -y
+
+    - name: Install dependencies with mamba
+      run: |
+        source $CONDA/bin/activate autogluon-conda && mamba install -c conda-forge --file requirements-gluon-conda.txt -y
+    - name: Run test
+      run: |
+        source $CONDA/bin/activate autogluon-conda && python test_linear_ensemble.py
+
+    - name: Install pip dependencies
+      run: |
+        source $CONDA/bin/activate autogluon-conda && pip install -r requirements-gluon-pip.txt
+        pytest
