@@ -18,6 +18,7 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
+
     - name: Install Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -26,10 +27,15 @@ jobs:
     - name: Check if environment exists
       id: check_env
       run: |
-        conda env list | grep -q "autogluon-conda" || echo "missing"
+        if conda env list | grep -q "autogluon-conda"; then
+          echo "env_status=exists" >> $GITHUB_ENV
+        else
+          echo "env_status=missing" >> $GITHUB_ENV
+        fi
+      shell: bash
 
     - name: Create environment if missing
-      if: steps.check_env.outputs.stdout == 'missing'
+      if: env.env_status == 'missing'
       run: |
         conda create -n autogluon-conda python=3.10 -y
 
